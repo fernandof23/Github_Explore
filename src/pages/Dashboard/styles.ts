@@ -73,11 +73,6 @@ export const Repositories = styled.div`
     }
 
 
-
-
-
-
-
     img {
       width: 64px;
       height: 64px;
@@ -85,7 +80,8 @@ export const Repositories = styled.div`
     }
 
     div {
-      margin-left: 16px;
+      margin: 0 16px;
+      flex:1;
 
       strong {
         font-size: 20px;
