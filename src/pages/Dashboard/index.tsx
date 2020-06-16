@@ -5,7 +5,7 @@ import api from '../../services/api';
 
 import logoImage from '../../assets/logo.svg';
 
-import { Title, Form, Repositories } from './styles';
+import { Title, Form, Repositories, Error } from './styles';
 
 interface Repository {
   full_name: string;
@@ -19,18 +19,29 @@ interface Repository {
 const Dashboard: React.FC = () => {
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [newRepo, setNewRepo] = useState('');
+  const [inputError, setInputError] = useState('');
 
   async function handleAddRepository(
     event: FormEvent<HTMLFormElement>,
   ): Promise<void> {
     event.preventDefault();
+    if (!newRepo) {
+      setInputError('Digite o autor/nome do repositório');
+      return;
+    }
 
-    const response = await api.get<Repository>(`/repos/${newRepo}`);
+    try {
+      const response = await api.get<Repository>(`/repos/${newRepo}`);
 
-    const repository = response.data;
+      const repository = response.data;
 
-    setRepositories([...repositories, repository]);
-    setNewRepo('');
+      setRepositories([...repositories, repository]);
+
+      setNewRepo('');
+      setInputError('');
+    } catch (err) {
+      setInputError('Erro na busca por esse Repositório');
+    }
   }
 
   return (
@@ -46,6 +57,8 @@ const Dashboard: React.FC = () => {
         />
         <button type="submit">Pesquisar</button>
       </Form>
+
+      {inputError && <Error>{inputError}</Error>}
 
       <Repositories>
         {repositories.map((item) => (
